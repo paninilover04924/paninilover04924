@@ -1,19 +1,19 @@
 #include <bits/stdc++.h>
 using namespace std;
-// Node of a doubly linked list
+// creating a struct of type node for a doubly linked lists   that can go backwards/forwards
 struct Node {
-int data;
+int var;
 struct Node* prev, *next;
 };
 // function to create and return a new node of a doubly linked list
-struct Node* getNode(int data)
+struct Node* getNode(int var)
 {
 // allocate node
 struct Node* newNode =
 (struct Node*)malloc(sizeof(struct Node));
   
-// put in the data
-newNode->data = data;
+// put in the data in in the new linked node
+newNode->var = var;
 newNode->prev = newNode->next = NULL;
 return newNode;
 }
@@ -22,11 +22,11 @@ return newNode;
 void sortedInsert(struct Node** head_ref, struct Node* newNode)
 {
 struct Node* current;
-// if list is empty
+// in the case that the linked list has only one case where it has no linked lists in it or new structs
 if (*head_ref == NULL)
 *head_ref = newNode;
 // if the node is to be inserted at the beginning of the doubly linked list
-else if ((*head_ref)->data >= newNode->data) {
+else if ((*head_ref)->var >= newNode->var) {
 newNode->next = *head_ref;
 newNode->next->prev = newNode;
 *head_ref = newNode;
@@ -34,12 +34,11 @@ newNode->next->prev = newNode;
 else {
 current = *head_ref;
   
-// locate the node after which the new node is to be inserted
+// locate  node after  the new node is inserted in the linked lists
 while (current->next != NULL &&
-current->next->data < newNode->data)
+current->next->var < newNode->var)
 current = current->next;
-  
-/*Make the appropriate links */
+
   
 newNode->next = current->next;
   
@@ -82,7 +81,7 @@ current = next;
 void printList(struct Node* head)
 {
 while (head != NULL) {
-cout << head->data << " ";
+cout << head->var << " ";
 head = head->next;
 }
 }
@@ -95,7 +94,7 @@ struct Node* new_node =
 (struct Node*)malloc(sizeof(struct Node));
   
 /* put in the data */
-new_node->data = new_data;
+new_node->var = new_data;
   
 /* Make next of new node as head and previous as NULL */
 new_node->next = (*head_ref);
@@ -123,12 +122,12 @@ push(&head, 8);
 push(&head, 21);
 push(&head, 18);
   
-cout << "Doubly Linked List Before Sortingn";
+cout << "the following doubly Linked List prior to sorting all of the following elements ";
 printList(head);
   
 insertionSort(&head);
   
-cout << "\nDoubly Linked List After Sortingn";
+cout << "\nDoubly Linked List after being sorted";
 printList(head);
   
 return 0;
