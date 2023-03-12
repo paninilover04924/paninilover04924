@@ -1,0 +1,546 @@
+#include<stdio.h>
+
+void nextGeneration(int grid[4][4], int M, int N)
+{
+int future[M][N];
+int aliveNeighbours,i,j,l,m,c;
+
+for (l = 0; l < M ; l++)
+{
+for ( m = 0; m < N ; m++)
+{
+
+c=0;
+//finding neighbour
+if(l==0){
+
+if(m==0){
+
+c=c+grid[l][m+1]+grid[l+1][m]+grid[l+1][m+1];
+}
+else if(m==N-1){
+c=c+grid[l][m-1]+grid[l+1][m]+grid[l+1][m-1];
+}
+else{
+c=c+grid[l][m-1]+grid[l+1][m]+grid[l+1][m-1]+grid[l+1][m+1]+grid[l][m+1];
+}
+
+
+}
+
+else if(l==M-1){
+if(m==0){
+
+c=c+grid[l][m+1]+grid[l-1][m]+grid[l-1][m+1];
+}
+else if(m==N-1){
+c=c+grid[l][m-1]+grid[l-1][m]+grid[l-1][m-1];
+}
+else{
+c=c+grid[l][m-1]+grid[l-1][m]+grid[l-1][m-1]+grid[l-1][m+1]+grid[l][m+1];
+}
+
+
+}
+else{
+
+
+if(m==0){
+
+c=c+grid[l][m+1]+grid[l+1][m]+grid[l+1][m+1]+grid[l-1][m]+grid[l-1][m+1];
+}
+else if(m==N-1){
+c=c+grid[l][m-1]+grid[l+1][m]+grid[l+1][m-1]+grid[l-1][m]+grid[l-1][m-1];
+}
+else{
+c=c+grid[l][m-1]+grid[l+1][m]+grid[l+1][m-1]+grid[l+1][m+1]+grid[l][m+1]+grid[l-1][m-1]+grid[l-1][m]+grid[l-1][m+1];
+}
+
+}
+
+if ((grid[l][m] == 1) && (c < 2))
+future[l][m] = 0;
+
+// Cell dies due to over population
+else if ((grid[l][m] == 1) && (c> 3))
+future[l][m] = 0;
+
+// A new cell is born
+else if ((grid[l][m] == 0) && (c == 3))
+future[l][m] = 1;
+
+// Remains the same
+else
+future[l][m] = grid[l][m];
+
+}
+
+
+}
+
+printf("Next Generation");
+for (int i = 0; i < M; i++)
+{
+for (int j = 0; j < N; j++)
+{
+if (future[i][j] == 0)
+printf(".");
+else
+printf("*");
+}
+printf("\n");
+}
+}
+
+
+void main()
+{
+int M = 4, N = 4;
+
+int grid[M][N],i,j;
+
+for ( i = 0; i < M; i++)
+{
+for (j = 0; j < N; j++)
+{
+scanf("%d",&grid[i][j]);
+}
+}
+
+
+printf("Original Generation\n");
+for ( i = 0; i < M; i++)
+{
+for (j = 0; j < N; j++)
+{
+if (grid[i][j] == 0){
+
+printf(".");
+}
+else
+{
+
+printf("*");
+}
+}
+printf("\n");
+}
+printf("\n");
+nextGeneration(grid, M, N);
+}
+
+EXPLANATION
+
+1=Take 0 as dead cell and 1 as Live cell
+
+2= for every element find its neighbour according to boundation (not go out of scope)
+
+Array[rows][cols-1]
+Array[rows+1][cols-1]
+Array[rows-1][cols]
+Array[rows][cols]
+Array[rows+1][cols]
+Array[rows-1][cols+1]
+Array[rows][cols+1]
+Array[rows+1][cols+1]
+3= according to rules convert it into dead or live cell
+
+ 
+
+====================
+
+import java.io.BufferedReader;
+
+import java.io.FileReader;
+
+import java.io.IOException;
+
+public class Dictionary {
+
+    private int M = 1319; //prime number
+
+    final private Bucket[] array;
+
+    public Dictionary() {
+
+        this.M = M;
+
+        array = new Bucket[M];
+
+        for (int i = 0; i < M; i++) {
+
+            array[i] = new Bucket();
+
+      }
+
+    }
+
+    private int hash(String key) {
+
+        return (key.hashCode() & 0x7fffffff) % M;
+
+    }
+
+    //call hash() to decide which bucket to put it in, do it.
+
+    public void add(String key) {
+
+        array[hash(key)].put(key);
+
+    }
+
+    //call hash() to find what bucket it's in, get it from that bucket.
+
+    public boolean contains(String input) {
+
+        input = input.toLowerCase();
+
+        return array[hash(input)].get(input);
+
+    }
+
+    public void build(String filePath) {
+
+        try {
+
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+
+                add(line);
+
+            }
+
+        } catch (IOException ioe) {
+
+            ioe.printStackTrace();
+
+        }
+
+    }
+
+    //this method is used in my unit tests
+
+    public String[] getRandomEntries(int num){
+
+        String[] toRet = new String[num];
+
+        for (int i = 0; i < num; i++){
+
+            //pick a random bucket, go out a random number
+
+            Node n = array[(int)Math.random()*M].first;
+
+            int rand = (int)Math.random()*(int)Math.sqrt(num);
+
+            for(int j = 0; j<rand && n.next!= null; j++) n = n.next;
+
+            toRet[i]=n.word;
+
+        }
+
+        return toRet;
+
+    }
+
+    class Bucket {
+
+        private Node first;
+
+        public boolean get(String in) {         //return key true if key exists
+
+            Node next = first;
+
+            while (next != null) {
+
+                if (next.word.equals(in)) {
+
+                    return true;
+
+                }
+
+                next = next.next;
+
+            }
+
+            return false;
+
+        }
+
+        public void put(String key) {
+
+            for (Node curr = first; curr != null; curr = curr.next) {
+
+                if (key.equals(curr.word)) {
+
+                    return;                     //search hit: return
+
+                }
+
+            }
+
+            first = new Node(key, first); //search miss: add new node
+
+        }
+
+       class Node {
+
+            String word;
+
+            Node next;
+
+            public Node(String key, Node next) {
+
+                this.word = key;
+
+                this.next = next;
+
+            }
+
+        }
+
+    }
+
+}
+
+SpellCheck.java
+
+import java.util.ArrayList;
+
+import java.util.Scanner;
+
+public class SpellCheck {
+
+    private Dictionary dict;
+
+    final static String filePath = "d:/desktop/words.txt";
+
+    final static char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+
+    SpellCheck() {
+
+        dict = new Dictionary();
+
+        dict.build(filePath);
+
+    }
+
+    void run() {
+
+        Scanner scan = new Scanner(System.in);
+
+        boolean done = false;
+
+        String input;
+
+        while (true) {
+
+            System.out.print("\n-------Enter a word: ");
+
+            input = scan.nextLine();
+
+            if (input.equals("")) {
+
+                break;
+
+            }
+
+            if (dict.contains(input)) {
+
+                System.out.println("\n" + input + " is spelled correctly");
+
+          } else {
+
+                System.out.print("is not spelled correctly, ");
+
+                System.out.println(printSuggestions(input));
+
+            }
+
+        }
+
+    }
+
+    String printSuggestions(String input) {
+
+        StringBuilder sb = new StringBuilder();
+
+        ArrayList<String> print = makeSuggestions(input);
+
+        if (print.size() == 0) {
+
+            return "and I have no idea what word you could mean.\n";
+
+        }
+
+        sb.append("perhaps you meant:\n");
+
+        for (String s : print) {
+
+            sb.append("\n -" + s);
+
+        }
+
+        return sb.toString();
+
+    }
+
+    private ArrayList<String> makeSuggestions(String input) {
+
+        ArrayList<String> toReturn = new ArrayList<>();
+
+        toReturn.addAll(charAppended(input));
+
+        toReturn.addAll(charMissing(input));
+
+        toReturn.addAll(charsSwapped(input));
+
+        return toReturn;
+
+    }
+
+    private ArrayList<String> charAppended(String input) {
+
+        ArrayList<String> toReturn = new ArrayList<>();
+
+        for (char c : alphabet) {
+
+            String atFront = c + input;
+
+            String atBack = input + c;
+
+            if (dict.contains(atFront)) {
+
+                toReturn.add(atFront);
+
+            }
+
+            if (dict.contains(atBack)) {
+
+                toReturn.add(atBack);
+
+            }
+
+        }
+
+        return toReturn;
+
+    }
+
+    private ArrayList<String> charMissing(String input) {  
+
+        ArrayList<String> toReturn = new ArrayList<>();
+
+        int len = input.length() - 1;
+
+        //try removing char from the front
+
+        if (dict.contains(input.substring(1))) {
+
+            toReturn.add(input.substring(1));
+
+        }
+
+        for (int i = 1; i < len; i++) {
+
+            //try removing each char between (not including) the first and last
+
+            String working = input.substring(0, i);
+
+            working = working.concat(input.substring((i + 1), input.length()));
+
+            if (dict.contains(working)) {
+
+                toReturn.add(working);
+
+            }
+
+        }
+
+        if (dict.contains(input.substring(0, len))) {
+
+            toReturn.add(input.substring(0, len));
+
+        }
+
+        return toReturn;
+
+    }
+
+    private ArrayList<String> charsSwapped(String input) {
+
+        ArrayList<String> toReturn = new ArrayList<>();
+
+        for (int i = 0; i < input.length() - 1; i++) {
+
+            String working = input.substring(0, i);// System.out.println("    0:" + working);
+
+            working = working + input.charAt(i + 1); //System.out.println("    1:" + working);
+
+            working = working + input.charAt(i); //System.out.println("    2:" + working);
+
+            working = working.concat(input.substring((i + 2)));//System.out.println("    FIN:" + working);
+
+            if (dict.contains(working)) {
+
+                toReturn.add(working);
+
+            }
+
+        }
+
+        return toReturn;
+
+    }
+
+    public static void main(String[] args) {
+
+        SpellCheck sc = new SpellCheck();
+
+        sc.run();
+
+    }
+
+}
+
+ 
+
+==================================================================================
+
+ 
+
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+vector<vector<bool>> world = {
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+};
+
+int main() {
+   vector<vector<bool>> future(world);
+   //loop into the vector to print the vector value
+   for (int i = 0; i < future.size(); i++) {
+        for (int j = 0; j < future[i].size(); j++){
+           if(future[i][j] == true)
+               cout <<future[i][j] << " ";
+           else
+               cout <<". ";
+       }      
+        cout << endl;
+    }
+   return 0;
+}
+
