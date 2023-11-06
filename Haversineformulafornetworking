@@ -19,3 +19,23 @@ def haversine(lat1, lon1, lat2, lon2):
 
 distance_km = haversine(lat1, lon1, lat2, lon2)
 print(f"Distance between the two coordinates: {distance_km} km")
+
+def friis_transmission(tx_power, frequency, distance):
+    # Speed of light (m/s)
+    c = 299792458
+
+    # Convert frequency to Hz
+    frequency = frequency * 1e6
+
+    # Calculate free space path loss (FSPL) assuming  paraamters can be found
+    fspl = (4 * math.pi * distance * frequency / c)**2
+
+    # Calculate received power (in dBm)
+    rx_power = tx_power - 20 * math.log10(distance) - 20 * math.log10(4 * math.pi / c) - fspl
+
+    return rx_power
+
+
+
+rx_power = friis_transmission(tx_power_dBm, frequency_MHz, distance_km)
+print(f"Received Signal Strength: {rx_power} dBm")
